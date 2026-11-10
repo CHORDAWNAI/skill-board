@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Skill Board</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Serif+SC:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --font:Inter,"Noto Serif SC","Source Han Serif SC","Songti SC","STSong","SimSun",serif;
+  --ink:#1d1d22; --ink-2:#4a4b55; --muted:#8b8d98; --line:rgba(30,30,50,.07);
+  --lav-50:#f6f4fd; --lav-100:#efecfb; --lav-200:#e2dcf7; --lav-300:#cfc6f1;
+  --panel:rgba(255,255,255,.78); --panel-edge:rgba(255,255,255,.95);
+}
+*{box-sizing:border-box}
+html{background:#e8e9ef}
+html,body{margin:0;font-family:var(--font);color:var(--ink);font-size:14px;-webkit-font-smoothing:antialiased}
+body{min-height:100vh;padding:28px;
+  background:radial-gradient(1000px 700px at 0% 0%,#efedf8 0%,transparent 60%),
+             radial-gradient(900px 700px at 100% 100%,#e4e8f2 0%,transparent 60%),
+             linear-gradient(180deg,#ecedf2,#e6e8ee)}
+.app{max-width:1440px;margin:0 auto;border-radius:34px;padding:22px 26px 28px;
+  background:rgba(255,255,255,.42);backdrop-filter:blur(24px) saturate(130%);-webkit-backdrop-filter:blur(24px) saturate(130%);
+  border:1px solid rgba(255,255,255,.8);box-shadow:0 30px 80px rgba(60,60,90,.10)}
+/* top bar */
+.top{display:flex;align-items:center;gap:20px;margin-bottom:26px}
+.logo{display:flex;align-items:center;gap:9px;font-weight:600;font-size:17px;letter-spacing:-.2px;white-space:nowrap}
+.logo svg{width:22px;height:22px}
+.nav{display:flex;gap:4px;margin:0 auto;flex-wrap:wrap;justify-content:center}
+.nav button{border:none;background:none;font:500 13px var(--font);color:var(--ink-2);padding:9px 16px;border-radius:999px;cursor:pointer;transition:.15s}
+.nav button:hover{background:rgba(255,255,255,.7)}
+.nav button.on{background:var(--ink);color:#fff}
+.tools{display:flex;gap:8px;align-items:center}
+.search{display:flex;align-items:center;gap:8px;height:42px;padding:0 14px;border-radius:999px;background:var(--panel);border:1px solid var(--panel-edge)}
+.search input{border:none;outline:none;background:none;font:13px var(--font);width:170px;color:var(--ink)}
+.circle{width:42px;height:42px;border-radius:50%;background:var(--panel);border:1px solid var(--panel-edge);display:grid;place-items:center;color:var(--ink-2)}
+.circle svg,.search svg{width:17px;height:17px}
+/* title */
+.title{display:flex;align-items:flex-end;justify-content:space-between;margin:0 4px 18px}
+h1{margin:0;font-size:30px;font-weight:600;letter-spacing:-.6px}
+.meta{color:var(--muted);font-size:13px;margin-top:6px}
+.count{display:flex;gap:8px}
+.count span{background:var(--panel);border:1px solid var(--panel-edge);border-radius:999px;padding:8px 14px;font-size:12.5px;color:var(--ink-2)}
+.count b{color:var(--ink);font-weight:600;margin-right:4px}
+/* board */
+.board{border-radius:28px;padding:16px;background:rgba(255,255,255,.38);border:1px solid rgba(255,255,255,.75);overflow-x:auto}
+.grid{display:grid;column-gap:12px;position:relative}
+.panel{background:var(--panel);border:1px solid var(--panel-edge);border-radius:22px;box-shadow:0 6px 20px rgba(60,60,90,.05);z-index:0;transition:opacity .2s}
+.jh{z-index:1;padding:16px 16px 12px;display:flex;align-items:center;justify-content:space-between}
+.jh .n{font-weight:600;font-size:14px}
+.jh .o{font-size:11px;color:var(--muted);background:var(--lav-50);border:1px solid var(--lav-100);border-radius:999px;padding:3px 9px}
+.sl{z-index:1;display:grid;grid-template-columns:26px 1fr;align-items:center;padding:0 8px;border-top:1px solid var(--line);min-height:52px}
+.sl .i{font-size:12px;line-height:1;color:#b3b5bf;font-variant-numeric:tabular-nums;font-feature-settings:"tnum"}
+.sl .t{font-size:13.5px;line-height:1;font-weight:500;color:#5f616c;letter-spacing:-.1px}
+.sl.first,.c.first{border-top:none}
+.c{z-index:1;border-top:1px solid var(--line);padding:9px 12px;min-height:52px;display:flex;flex-direction:column;justify-content:center;gap:4px;transition:opacity .2s}
+.c.last{padding-bottom:14px}
+.sk{display:flex;align-items:center;gap:8px;width:100%;text-align:left;border:none;background:none;padding:6px 8px;margin:0 -8px;border-radius:10px;cursor:pointer;font:500 12.5px var(--font);color:var(--ink);transition:.15s;width:calc(100% + 16px)}
+.sk::before{content:"";flex:0 0 7px;height:7px;border-radius:50%;background:var(--lav-300);box-shadow:0 0 0 3px var(--lav-100)}
+.sk:hover{background:var(--lav-50)}
+.sk .nm{overflow-wrap:anywhere}
+.note{font-size:11.5px;color:var(--muted);line-height:1.45}
+.fade{opacity:.28}
+.hide{display:none}
+/* others */
+.others{display:grid;grid-template-columns:168px 1fr;column-gap:12px;margin-top:12px}
+.others .sl{border-top:none}
+.others .panel{padding:12px 18px;min-height:60px;display:flex;align-items:center;flex-wrap:wrap;gap:4px 28px}
+.others .sk{width:auto;margin:0}
+.empty-o{color:var(--muted);font-size:12.5px}
+/* drawer */
+.scrim{position:fixed;inset:0;background:rgba(40,40,60,.12);opacity:0;pointer-events:none;transition:.2s}
+.scrim.on{opacity:1;pointer-events:auto}
+aside{position:fixed;top:16px;right:16px;bottom:16px;width:min(420px,calc(100vw - 32px));border-radius:30px;padding:22px;overflow:auto;
+  background:rgba(240,241,246,.80);backdrop-filter:blur(26px) saturate(130%);-webkit-backdrop-filter:blur(26px) saturate(130%);
+  border:1px solid rgba(255,255,255,.9);box-shadow:0 30px 80px rgba(60,60,90,.16);
+  transform:translateX(110%);transition:.3s cubic-bezier(.2,.8,.2,1)}
+aside.on{transform:none}
+.dh{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;padding:4px 4px 16px}
+.tags{display:flex;gap:6px;margin-bottom:10px}
+.tag{font-size:11.5px;color:var(--ink-2);background:rgba(255,255,255,.75);border:1px solid #fff;border-radius:999px;padding:4px 10px}
+.tag.l{background:var(--lav-100);border-color:var(--lav-100)}
+aside h2{font-size:18px;font-weight:600;margin:0;letter-spacing:-.3px;overflow-wrap:anywhere;color:var(--ink)}
+.x{flex:0 0 38px;width:38px;height:38px;border-radius:50%;border:1px solid #fff;background:rgba(255,255,255,.8);color:var(--ink-2);font-size:16px;cursor:pointer;display:grid;place-items:center}
+.x:hover{background:#fff}
+.sec{background:rgba(255,255,255,.82);border:1px solid #fff;border-radius:20px;padding:14px 16px;margin-bottom:10px;box-shadow:0 4px 14px rgba(60,60,90,.04)}
+.sec h3{font-size:12px;font-weight:500;color:var(--muted);margin:0 0 8px;letter-spacing:0}
+.sec p{font-size:13.5px;line-height:1.7;margin:0;color:var(--ink-2)}
+.pill{display:inline-block;font-size:13px;color:var(--ink-2);background:var(--lav-50);border:1px solid var(--lav-100);border-radius:999px;padding:7px 14px;margin:2px 6px 4px 0}
+.files{list-style:none;padding:0;margin:0}
+.files li{display:flex;align-items:center;gap:9px;font-size:13px;color:var(--ink-2);padding:5px 0}
+.files li::before{content:"";flex:0 0 6px;height:6px;border-radius:50%;background:var(--lav-300);box-shadow:0 0 0 3px var(--lav-100)}
+.path{font-size:12.5px;color:var(--ink-2);line-height:1.6;overflow-wrap:anywhere}
+.hist div{display:flex;justify-content:space-between;font-size:13px;padding:5px 0;color:var(--ink-2)}
+.hist div span:last-child{color:var(--muted);font-variant-numeric:tabular-nums}
+.foot{display:flex;justify-content:flex-end;padding:6px 2px 2px}
+.copy{border:none;background:var(--ink);color:#fff;border-radius:999px;padding:11px 20px;font:500 13px var(--font);cursor:pointer}
+.badge{font-size:11px;color:var(--muted);background:var(--lav-50);border:1px solid var(--lav-100);border-radius:999px;padding:3px 9px}
+.footnote{text-align:right;font-size:11.5px;color:var(--muted);padding:10px 6px 0}
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="top">
+    <div class="logo">
+      <svg viewBox="0 0 24 24" fill="none" stroke="#1d1d22" stroke-width="1.8" stroke-linejoin="round"><path d="M12 3 3 7.5 12 12l9-4.5L12 3Z"/><path d="m3 12 9 4.5 9-4.5"/><path d="m3 16.5 9 4.5 9-4.5"/></svg>
+      <span id="ws"></span>
+    </div>
+    <div class="nav" id="nav"></div>
+    <div class="tools">
+      <label class="search"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg><input id="q"></label>
+    </div>
+  </div>
+  <div class="title">
+    <div><h1 id="h1"></h1><div class="meta" id="sub"></div></div>
+    <div class="count" id="count"></div>
+  </div>
+  <div class="board">
+    <div class="grid" id="grid"></div>
+    <div class="others" id="others"></div>
+    <div class="footnote" id="fn"></div>
+  </div>
+</div>
+<div class="scrim" id="scrim"></div>
+<aside id="drawer"></aside>
+
+<script>
+/* ==================== BOARD DATA: edit only this block ==================== */
+const BOARD = {
+  workspace: "Studio Workspace",
+  title: "Skill Board",
+  subtitle: "Workflow skills by team and stage",
+  repo: "my-skills",                 // repository name shown in the detail panel; may be ""
+  footnote: "Fictional example",     // small note at the bottom right; may be ""
+  labels: { all:"All", search:"Find a skill", others:"Others", othersEmpty:"Cross-team skills will appear here",
+            skills:"skills", columns:"teams", stages:"stages",
+            what:"What it does", prompts:"Example prompts", files:"Files", location:"Repository", versions:"Versions",
+            copy:"Copy prompt", copied:"Copied", copyFail:"Copy failed. Please select it manually." },
+  // Optional filter tabs at the top. Remove "groups" to filter by single column instead.
+  groups: [ {id:"research",name:"Research",columns:["r"]},
+            {id:"content",name:"Content",columns:["w","d"]},
+            {id:"delivery",name:"Delivery",columns:["p","o"]} ],
+  // Columns: teams, business lines or types of work. "badge" is the small tag in the column header.
+  columns: [ {id:"r",name:"Research",badge:"R"}, {id:"w",name:"Writing",badge:"W"}, {id:"d",name:"Design",badge:"D"},
+             {id:"p",name:"Publishing",badge:"P"}, {id:"o",name:"Operations",badge:"O"} ],
+  // Rows: work stages, in order.
+  stages: [ {id:"brief",name:"Brief"}, {id:"prep",name:"Preparation"}, {id:"draft",name:"Drafting"},
+            {id:"review",name:"Review"}, {id:"deliver",name:"Delivery"}, {id:"retro",name:"Retrospective"} ],
+  // Skills: "col" is a column id ("others" for cross-team skills); "stage" is one stage id or an array.
+  skills: [
+    {id:"Requirement interview",col:"r",stage:"brief",desc:"Turns a requirements conversation into goals, audience, scope and open questions.",prompts:["Summarize the requirements from these meeting notes"],files:["SKILL.md"],path:"research/brief/interview",versions:[["2026-01-10","Created"]]},
+    {id:"Fact check",col:"r",stage:"prep",desc:"Checks sources, dates and data definitions, and flags anything doubtful.",prompts:["Check the data sources in this document"],files:["SKILL.md","references/checklist.md"],path:"research/prep/fact-check",versions:[["2026-01-12","Created"]]},
+    {id:"Asset sorting",col:"d",stage:"prep",desc:"Groups images, screenshots and references by theme into an asset list.",prompts:["Sort these reference images by theme"],files:["SKILL.md"],path:"design/prep/assets",versions:[["2026-01-12","Created"]]},
+    {id:"Outline draft",col:"w",stage:"draft",desc:"Builds an article structure from a topic and source material.",prompts:["Draft an outline from these materials"],files:["SKILL.md"],path:"writing/draft/outline",versions:[["2026-01-15","Created"],["2026-02-02","v1.2 Added paragraph checks"]]},
+    {id:"First-draft layout",col:"d",stage:"draft",desc:"Lays out a first draft with the agreed template and type hierarchy.",prompts:["Lay out this draft with our template"],files:["SKILL.md","assets/template.html"],path:"design/draft/layout",versions:[["2026-01-16","Created"]]},
+    {id:"Terminology check",col:"w",stage:"review",desc:"Makes terms and spellings consistent and lists every change.",prompts:["Check this piece for consistent terminology"],files:["SKILL.md","references/glossary.md"],path:"writing/review/terms",versions:[["2026-01-18","Created"]]},
+    {id:"Pre-publish check",col:"p",stage:"deliver",desc:"Checks sizes, page numbers, links and platform requirements before publishing.",prompts:["Run the pre-publish checklist with me"],files:["SKILL.md"],path:"publish/deliver/checklist",versions:[["2026-01-20","Created"]]},
+    {id:"Data archive",col:"p",stage:"retro",desc:"Collects key post-publish metrics and archives them in a sheet.",prompts:["Archive this week's publishing data"],files:["SKILL.md"],path:"publish/retro/archive",versions:[["2026-01-25","Created"]]},
+    {id:"Task breakdown",col:"o",stage:"brief",desc:"Breaks a project into tasks, owners and milestones.",prompts:["Break this project down into tasks"],files:["SKILL.md"],path:"ops/brief/breakdown",versions:[["2026-01-10","Created"]]},
+    {id:"Retro notes",col:"o",stage:"retro",desc:"Turns feedback and the reasons behind changes into reusable lessons.",prompts:["Write a retrospective for this project"],files:["SKILL.md"],path:"ops/retro/review",versions:[["2026-01-26","Created"]]}
+  ],
+  // Optional cell notes: "columnId|stageId": "note"
+  notes: {}
+};
+/* ==================== Template logic below: usually no need to edit ==================== */
+const B=BOARD, L=B.labels, J=B.columns, S=B.stages, K=B.skills;
+const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const sid=k=>[].concat(k.stage||[]);
+document.title=B.title+(B.workspace?" · "+B.workspace:"");
+document.getElementById("ws").textContent=B.workspace;
+document.getElementById("h1").textContent=B.title;
+document.getElementById("sub").textContent=B.subtitle;
+document.getElementById("fn").textContent=B.footnote||"";
+const qi=document.getElementById("q"); qi.placeholder=L.search;
+const grid=document.getElementById("grid"), oth=document.getElementById("others");
+grid.style.gridTemplateColumns=`168px repeat(${J.length},minmax(176px,1fr))`;
+const minW=168+J.length*188; grid.style.minWidth=oth.style.minWidth=minW+"px";
+const tabs=B.groups&&B.groups.length?B.groups:J.map(j=>({id:j.id,name:j.name,columns:[j.id]}));
+let f=null,q="";
+const nav=document.getElementById("nav");
+nav.innerHTML=[{id:"",name:L.all},...tabs].map(t=>`<button data-t="${esc(t.id)}" class="${t.id===""?"on":""}">${esc(t.name)}</button>`).join("");
+nav.onclick=e=>{const b=e.target.closest("button");if(!b)return;nav.querySelectorAll("button").forEach(x=>x.classList.toggle("on",x===b));const t=tabs.find(x=>x.id===b.dataset.t);f=t?new Set(t.columns):null;render();};
+qi.oninput=e=>{q=e.target.value.trim().toLowerCase();render();};
+const match=k=>!q||(k.id+" "+(k.desc||"")).toLowerCase().includes(q);
+const off=id=>f&&!f.has(id)?" fade":"";
+const skBtn=(k,i)=>`<button class="sk${match(k)?"":" fade"}" data-i="${i}"><span class="nm">${esc(k.name||k.id)}</span></button>`;
+function render(){
+  const rows=S.length+1,g=[];
+  J.forEach((j,ci)=>g.push(`<div class="panel${off(j.id)}" style="grid-column:${ci+2};grid-row:1 / ${rows+1}"></div>`));
+  g.push(`<div style="grid-column:1;grid-row:1"></div>`);
+  J.forEach((j,ci)=>g.push(`<div class="jh" style="grid-column:${ci+2};grid-row:1"><span class="n">${esc(j.name)}</span>${j.badge?`<span class="o">${esc(j.badge)}</span>`:""}</div>`));
+  S.forEach((s,ri)=>{
+    const r=ri+2,cls=(ri===0?" first":"")+(ri===S.length-1?" last":"");
+    g.push(`<div class="sl${ri===0?" first":""}" style="grid-column:1;grid-row:${r}"><span class="i">${String(ri+1).padStart(2,"0")}</span><span class="t">${esc(s.name)}</span></div>`);
+    J.forEach((j,ci)=>{
+      const items=K.map((k,i)=>[k,i]).filter(([k])=>k.col===j.id&&sid(k).includes(s.id)),n=(B.notes||{})[j.id+"|"+s.id];
+      g.push(`<div class="c${cls}${off(j.id)}" style="grid-column:${ci+2};grid-row:${r}">${items.map(([k,i])=>skBtn(k,i)).join("")}${n?`<div class="note">${esc(n)}</div>`:""}</div>`);
+    });
+  });
+  grid.innerHTML=g.join("");
+  const o=K.map((k,i)=>[k,i]).filter(([k])=>k.col==="others");
+  oth.innerHTML=`<div class="sl"><span class="i">··</span><span class="t">${esc(L.others)}</span></div><div class="panel">${o.length?o.map(([k,i])=>skBtn(k,i)).join(""):`<span class="empty-o">${esc(L.othersEmpty)}</span>`}</div>`;
+
+  document.getElementById("count").innerHTML=`<span><b>${K.length}</b>${esc(L.skills)}</span><span><b>${J.length}</b>${esc(L.columns)}</span><span><b>${S.length}</b>${esc(L.stages)}</span>`;
+}
+const dr=document.getElementById("drawer"),sc=document.getElementById("scrim");
+const close=()=>{dr.classList.remove("on");sc.classList.remove("on")};
+sc.onclick=close;document.addEventListener("keydown",e=>{if(e.key==="Escape")close()});
+document.querySelector(".board").addEventListener("click",e=>{
+  const b=e.target.closest(".sk");if(!b)return;
+  const k=K[+b.dataset.i],j=J.find(x=>x.id===k.col),ss=sid(k).map(id=>S.find(x=>x.id===id)).filter(Boolean);
+  const sec=(h,body)=>body?`<div class="sec"><h3>${esc(h)}</h3>${body}</div>`:"";
+  const pr=k.prompts||[];
+  dr.innerHTML=`<div class="dh"><div>
+      <div class="tags"><span class="tag">${esc(j?j.name:L.others)}</span>${ss.map(s=>`<span class="tag l">${esc(s.name)}</span>`).join("")}</div>
+      <h2>${esc(k.name||k.id)}</h2></div><button class="x" aria-label="Close">✕</button></div>
+    ${sec(L.what,k.desc?`<p>${esc(k.desc)}</p>`:"")}
+    ${sec(L.prompts,pr.map(t=>`<span class="pill">${esc(t)}</span>`).join(""))}
+    ${sec(L.files,(k.files||[]).length?`<ul class="files">${k.files.map(x=>`<li>${esc(x)}</li>`).join("")}</ul>`:"")}
+    ${sec(L.location,k.path?`<div class="path">${esc(B.repo?B.repo+"/":"")}${esc(k.path)}/</div>`:"")}
+    ${sec(L.versions,(k.versions||[]).length?`<div class="hist">${k.versions.map(v=>`<div><span>${esc(v[1])}</span><span>${esc(v[0])}</span></div>`).join("")}</div>`:"")}
+    ${pr.length?`<div class="foot"><button class="copy">${esc(L.copy)}</button></div>`:""}`;
+  dr.classList.add("on");sc.classList.add("on");
+  dr.querySelector(".x").onclick=close;
+  const c=dr.querySelector(".copy");if(c)c.onclick=()=>navigator.clipboard.writeText(pr[0]).then(()=>c.textContent=L.copied).catch(()=>c.textContent=L.copyFail);
+});
+render();
+</script>
+</body>
+</html>
